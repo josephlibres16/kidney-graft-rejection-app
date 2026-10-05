@@ -1,0 +1,21 @@
+rank,probeset,gene_symbol,gain,mean_log2_rejection,mean_log2_non_rejection,log2_fold_change,higher_in
+1,11723069_at,GABBR1 /// UBD,72.646,10.117,8.574,1.543,rejection
+2,11760144_x_at,HLA-F,71.88,8.57,7.753,0.818,rejection
+3,11729649_at,PRF1,53.255,7.441,6.544,0.897,rejection
+4,11720298_at,CXCL10,48.653,9.683,7.439,2.243,rejection
+5,11749245_a_at,CXCL11,48.279,7.751,5.065,2.686,rejection
+6,11732466_a_at,CXCL11,44.758,7.128,4.537,2.592,rejection
+7,11719943_at,CXCL9,42.117,10.782,8.253,2.528,rejection
+8,11753484_x_at,KLRD1,42.017,7.369,6.104,1.265,rejection
+9,11740451_a_at,KLRD1,41.259,7.107,5.846,1.261,rejection
+10,11743168_at,IDO1,40.884,8.698,6.856,1.842,rejection
+11,11727116_a_at,PLA1A,39.971,8.936,7.947,0.989,rejection
+12,11718983_x_at,CCL4 /// CCL4L1 /// CCL4L2,38.944,8.338,6.286,2.052,rejection
+13,11718982_s_at,CCL4 /// CCL4L1 /// CCL4L2,36.23,9.037,6.766,2.272,rejection
+14,11740452_x_at,KLRD1,35.259,7.013,5.676,1.336,rejection
+15,11749595_a_at,GBP4,28.02,5.064,4.12,0.943,rejection
+16,11761790_x_at,TRDC,23.691,6.785,5.424,1.361,rejection
+17,11726287_a_at,WARS,21.615,10.08,9.168,0.912,rejection
+18,11746954_s_at,CCL4 /// CCL4L1 /// CCL4L2,20.84,8.035,6.279,1.755,rejection
+19,11753535_x_at,KLRD1,20.527,6.292,5.174,1.118,rejection
+20,11729751_a_at,LPAR1,19.302,6.887,6.816,0.071,rejection

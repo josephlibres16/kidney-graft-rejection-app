@@ -1,0 +1,71 @@
+{
+  "thesis_title": "Predicting Kidney Graft Rejection from Biopsy Transcriptomic Data with a Bayesian-Optimized XGBoost Model",
+  "authors": [
+    "Francis Joseph G. Libres",
+    "Hanz Ian B. Silva",
+    "Kim Miguel P. Sobrepe\u00f1a"
+  ],
+  "institution": "School of Information Technology \u00b7 Map\u00faa University",
+  "dataset": "GSE98320",
+  "platform": "Affymetrix PrimeView (GPL15207)",
+  "threshold": 0.5,
+  "n_probesets": 49293,
+  "n_train": 725,
+  "n_test": 310,
+  "n_train_rejection": 241,
+  "n_test_rejection": 102,
+  "n_probesets_used": 2579,
+  "n_trees": 306,
+  "best_params": {
+    "n_estimators": 306,
+    "max_depth": 7,
+    "learning_rate": 0.015543437488361626,
+    "subsample": 0.5144515537258572,
+    "colsample_bytree": 0.5080008165180597,
+    "min_child_weight": 1,
+    "gamma": 0.20848612399822594,
+    "reg_alpha": 9.939802590712535,
+    "reg_lambda": 1.270631370256936
+  },
+  "best_cv_auc": 0.88494,
+  "n_trials": 50,
+  "test_metrics": {
+    "roc_auc": 0.909,
+    "auprc": 0.7975,
+    "f1": 0.7685,
+    "sensitivity": 0.8137,
+    "specificity": 0.851,
+    "precision": 0.7281,
+    "accuracy": 0.8387
+  },
+  "cv_metrics_tuned": {
+    "roc_auc": 0.8849,
+    "auprc": 0.7861,
+    "f1": 0.7454,
+    "sensitivity": 0.7884,
+    "specificity": 0.8368,
+    "precision": 0.7082,
+    "accuracy": 0.8207
+  },
+  "versions": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.6.1",
+    "xgboost": "3.4.1",
+    "optuna": "5.0.0",
+    "imbalanced-learn": "0.14.2"
+  },
+  "run_finished_utc": "2026-09-27T19:38:03+00:00",
+  "series_matrix_sha256": "182b4846ab77dc7f4a9f635a54f4ce572e4a5d2820c73105c31eb4620f45f870",
+  "model_sha256": "11c000d7cef514b1db51cbd1f01b67b599cbfa4a0f3eea03cd300426534de5c2",
+  "demo_specimens": [
+    "GSM2591574",
+    "GSM2591468",
+    "GSM2591897",
+    "GSM2591083",
+    "GSM2591011",
+    "GSM2591613",
+    "GSM2591199",
+    "GSM2591484"
+  ]
+}
