@@ -1,0 +1,28 @@
+name: Sync to Hugging Face Space
+
+# Add two repository secrets first: HF_TOKEN (a write token from huggingface.co)
+# and HF_USERNAME (your Hugging Face username). Change SPACE_NAME if the Space
+# is named differently.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Push to Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          SPACE_NAME: kidney-graft-rejection
+        run: |
+          git push --force \
+            https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME.git \
+            main

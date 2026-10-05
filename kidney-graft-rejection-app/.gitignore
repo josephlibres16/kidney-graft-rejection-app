@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store
+*.zip
+gradio_cached_examples/
+flagged/
+# Raw data stays out of the repository (it is public on GEO)
+*_series_matrix.txt.gz
+notebook1_outputs/
+notebook2_outputs/

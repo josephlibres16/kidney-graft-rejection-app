@@ -1,0 +1,21 @@
+# Render blueprint. In the Render dashboard: New → Blueprint → pick this repository.
+# The free instance has 512 MB of RAM and sleeps after 15 minutes without traffic,
+# so MAX_SAMPLES is lowered here to keep one upload comfortably inside that memory.
+services:
+  - type: web
+    name: kidney-graft-rejection
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: MAX_SAMPLES
+        value: "50"
+      - key: GRADIO_ANALYTICS_ENABLED
+        value: "False"
+      - key: MPLBACKEND
+        value: "Agg"

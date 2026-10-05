@@ -1,0 +1,115 @@
+{
+  "run_started_utc": "2026-09-27T18:50:24+00:00",
+  "python": "3.13.15",
+  "platform": "Linux-6.6.122+-x86_64-with-glibc2.39",
+  "versions": {
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.6.1",
+    "xgboost": "3.4.1",
+    "optuna": "5.0.0",
+    "imbalanced-learn": "0.14.2"
+  },
+  "xgboost_device": "cpu",
+  "gpu_on_runtime_unused": "NVIDIA L4",
+  "cpu_cores": 12,
+  "random_state": 42,
+  "sha256": {
+    "series_matrix": "182b4846ab77dc7f4a9f635a54f4ce572e4a5d2820c73105c31eb4620f45f870",
+    "split_file": "54743739721efa5be960feb22ce3620c516bf241b798923c7b188789c9f77234",
+    "notebook1_config": "3aa927bf07fb5e40133d019074900405db152dc3cf7cc23bd8295bcc322c391c"
+  },
+  "data": {
+    "n_train": 725,
+    "n_train_rejection": 241,
+    "n_test": 310,
+    "n_test_rejection": 102,
+    "n_probesets": 49293
+  },
+  "optuna": {
+    "n_trials": 50,
+    "sampler": "TPESampler(seed=42)",
+    "best_trial": 42,
+    "best_cv_auc": 0.88494,
+    "best_params": {
+      "n_estimators": 306,
+      "max_depth": 7,
+      "learning_rate": 0.015543437488361626,
+      "subsample": 0.5144515537258572,
+      "colsample_bytree": 0.5080008165180597,
+      "min_child_weight": 1,
+      "gamma": 0.20848612399822594,
+      "reg_alpha": 9.939802590712535,
+      "reg_lambda": 1.270631370256936
+    },
+    "resumed": true,
+    "resumed_after_trials": [
+      20,
+      39
+    ],
+    "minutes_this_session": 0.0,
+    "study_file": "optuna_study.db"
+  },
+  "annotation_source": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL15207&targ=self&form=text&view=data",
+  "final_model": {
+    "n_probesets_used": 2579,
+    "top20": [
+      "11723069_at",
+      "11760144_x_at",
+      "11729649_at",
+      "11720298_at",
+      "11749245_a_at",
+      "11732466_a_at",
+      "11719943_at",
+      "11753484_x_at",
+      "11740451_a_at",
+      "11743168_at",
+      "11727116_a_at",
+      "11718983_x_at",
+      "11718982_s_at",
+      "11740452_x_at",
+      "11749595_a_at",
+      "11761790_x_at",
+      "11726287_a_at",
+      "11746954_s_at",
+      "11753535_x_at",
+      "11729751_a_at"
+    ]
+  },
+  "test_results_tuned": {
+    "roc_auc": 0.909,
+    "auprc": 0.7975,
+    "f1": 0.7685,
+    "sensitivity": 0.8137,
+    "specificity": 0.851,
+    "precision": 0.7281,
+    "accuracy": 0.8387
+  },
+  "run_finished_utc": "2026-09-27T19:38:03+00:00",
+  "runtime_minutes": 47.7,
+  "output_sha256": {
+    "cv_fold_results.csv": "5b0bfe2a69729fee44874eba328aae5d53e40b4f4d0ced8055b56489843d06b3",
+    "cv_paired_tests.csv": "edc681783889832c137ef6e1fddc7c985d16dc1a46bf069f4dda9dea567534b6",
+    "cv_summary.csv": "c84980e3cda96e8bf3ac596d0481e4d293d785f1391f0b0ce54bc16cfba1d358",
+    "data_dictionary_top20.csv": "7191242147f62691d8aea725788cb707c9f13261c9b008c85a7c3b694ac34dfb",
+    "dca_net_benefit.csv": "ede53a6750ce5eb276b070c157f90616fc1b993af0cc67cbf9e102cce5767320",
+    "final_tuned_xgboost.json": "11c000d7cef514b1db51cbd1f01b67b599cbfa4a0f3eea03cd300426534de5c2",
+    "importance_all_used_probesets.csv": "45c240ab26b7d46e0e098a42bfaa7723fa99504cf4cf21fb197e9ddc1fe1c36b",
+    "optuna_best_params.csv": "bea8b4cbb7d08b2799ad2dc1bc742dcd3b572463ab53711f1e9c3e3e448d5b9b",
+    "optuna_param_importance.csv": "131bd92dd3afc880967af8a6f189f6864044d3bd7e6f50f4349e9873f6860be7",
+    "optuna_trials.csv": "5086c52a44419335571b58420928df36b37f1621dfecb5b928a5620902446eb7",
+    "partial_dependence_top20.csv": "7549d925ed74f8ee89d0ab9490e08448b2edab97a0f23ac51cc5ce05bd017b69",
+    "split_thresholds_top20.csv": "1862dab5c6fd8a6bf529bc5c14375c300ef7f0e75c5b2da45dc6c22ee26cce12",
+    "test_metrics_point.csv": "86a0212a7b923a235ba2be17b49d376b9e35a7cc3ada58c089de2a89a6f09b96",
+    "test_metrics_with_ci.csv": "3330f8f27631f9c7acccf752a73c9412168c0dbc3525672ac5249cbf23d553a0",
+    "test_paired_tests.csv": "1a7388447f5255712fcf295eebf3ea3480774c94f5ed891b76fbbced6ea91207",
+    "test_predictions.csv": "68447b82230e879c32c36dd150d85beaa308e1375d78aae1417f16f826d9e091",
+    "test_predictions_checkpoint.csv": "3f68de628f7b2b0f478a06390521b73a43b0022ed2dd2a6fb3a88cfdd45e6719",
+    "top20_by_model.csv": "3db54fa77f9f953eb55bdbd6a5034dc40f811572eba9c06c2280177f96c2fbe0",
+    "top20_consensus.csv": "498eedc12e9badfca01d482e0fd7a314b238bd052c940c054545647bcd9caca0",
+    "top20_overlap_gene.csv": "bc52cbd7da5621798b34dc349cb51d2b76759bfc5993b7a3466ce3a2a36ce1e5",
+    "top20_overlap_probeset.csv": "84f93765e68f764a4bc5a0120fac2304238f9f56cf1e13541843f6a904efac25",
+    "top20_stability.csv": "eb44d5ea038ca2ae55953913e835eebe4201a9be886ecff9456481a183365298",
+    "top_n_overlap_summary.csv": "8860b7843e81a1c1c7976ffdf02552d4127eae4cf9f14d0a9e6a1625f9c5334f"
+  }
+}
