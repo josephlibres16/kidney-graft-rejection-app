@@ -243,6 +243,92 @@ def panel_summary(d):
     return n_rej, len(usable)
 
 
+# Plain-language notes for the genes behind the top-20 probesets, keyed by the dictionary's gene_symbol.
+GENE_INFO = {
+    "GABBR1 /// UBD": (
+        "Ubiquitin D (FAT10) / GABA-B receptor 1",
+        "This probeset measures two neighbouring genes in the MHC region. The rejection signal is most likely UBD, "
+        "a protein switched on by the inflammatory messengers interferon-gamma and TNF-alpha. High levels mark "
+        "inflamed tissue under immune attack."),
+    "HLA-F": (
+        "HLA class I molecule F",
+        "A non-classical tissue-type (HLA) molecule that rises when cells are exposed to interferon. It is read by "
+        "receptors on natural killer (NK) cells, so higher levels point to an active immune response in the graft."),
+    "PRF1": (
+        "Perforin 1",
+        "The pore-forming protein that cytotoxic T cells and NK cells release to punch holes in target cells and kill "
+        "them. Its presence is a direct sign of killer lymphocytes attacking graft tissue."),
+    "CXCL10": (
+        "Chemokine CXCL10 (IP-10)",
+        "A chemical signal produced in response to interferon-gamma that recruits activated T cells and NK cells into "
+        "the tissue through the CXCR3 receptor. It is one of the best-known biomarkers of kidney transplant rejection."),
+    "CXCL11": (
+        "Chemokine CXCL11 (I-TAC)",
+        "An interferon-induced chemokine that, like CXCL9 and CXCL10, draws activated T cells into the graft via CXCR3. "
+        "It is part of the interferon-gamma inflammation signature of rejection."),
+    "CXCL9": (
+        "Chemokine CXCL9 (MIG)",
+        "Made almost exclusively in response to interferon-gamma, it attracts effector T cells to the graft. Raised "
+        "CXCL9 in biopsies and urine is strongly associated with rejection."),
+    "KLRD1": (
+        "Killer cell lectin-like receptor D1 (CD94)",
+        "A receptor found on NK cells and some cytotoxic T cells. Higher levels mean more of these killer cells are "
+        "present in the biopsy, which is typical of antibody-mediated rejection."),
+    "IDO1": (
+        "Indoleamine 2,3-dioxygenase 1",
+        "An enzyme that breaks down the amino acid tryptophan. Interferon-gamma strongly induces it, so it acts as a "
+        "readout of interferon-driven inflammation. It is also part of the body's attempt to dampen immune responses."),
+    "PLA1A": (
+        "Phospholipase A1 member A",
+        "An enzyme that produces lipid signalling molecules. It is expressed with activated T cells and appears among "
+        "transcripts reported to rise in T cell-mediated rejection."),
+    "CCL4 /// CCL4L1 /// CCL4L2": (
+        "Chemokine CCL4 (MIP-1 beta) family",
+        "A chemokine released by activated CD8 T cells and NK cells that attracts monocytes and more lymphocytes via "
+        "CCR5. It marks ongoing cytotoxic inflammation in the graft."),
+    "GBP4": (
+        "Guanylate-binding protein 4",
+        "An interferon-induced protein involved in cellular defence. Its rise is another footprint of the "
+        "interferon-gamma response seen in rejecting kidneys."),
+    "TRDC": (
+        "T cell receptor delta constant",
+        "Part of the receptor carried by gamma-delta T cells, with expression also seen in some NK cells. Higher levels "
+        "mean more of these lymphocytes have infiltrated the biopsy."),
+    "WARS": (
+        "Tryptophanyl-tRNA synthetase",
+        "An enzyme that loads tryptophan for protein synthesis. Its interferon-inducible form rises sharply under "
+        "interferon-gamma, so it is a sensitive marker of that inflammatory signal."),
+    "LPAR1": (
+        "Lysophosphatidic acid receptor 1",
+        "A receptor involved in cell migration and tissue scarring (fibrosis). Its average barely differs between the "
+        "two groups, so the model likely uses it together with other genes rather than as a simple up/down marker."),
+}
+
+
+def gene_info(symbol):
+    return GENE_INFO.get(str(symbol), (str(symbol), "No description is available for this gene."))
+
+
+def panel_drivers(d):
+    """
+    Rank the top-20 probesets by how much they push this biopsy toward one class.
+
+    signal = gain x (shift of this biopsy from the midpoint of the two training averages, toward the
+    rejection average, capped at half the gap between them). Positive leans toward rejection. This
+    weighs the input against the training data; it is not the model's internal reasoning.
+    """
+    d = d[d["closer_to"] != "not in file"].copy()
+    gap = d["mean_log2_rejection"] - d["mean_log2_non_rejection"]
+    half = gap.abs() / 2
+    mid = (d["mean_log2_rejection"] + d["mean_log2_non_rejection"]) / 2
+    shift = ((d["value"] - mid) * np.sign(gap)).clip(lower=-half, upper=half)
+    d["lean"] = np.where(half > 0, shift / half.where(half > 0, 1), 0.0)       # -1 non-rejection .. +1 rejection
+    d["signal"] = d["gain"] * shift
+    total = d["signal"].abs().sum()
+    d["share"] = d["signal"].abs() / total if total > 0 else 0.0
+    return d.reindex(d["signal"].abs().sort_values(ascending=False).index)
+
+
 def panel_figure(d, specimen):
     """Each top-20 probeset: this biopsy's expression against the two training class averages."""
     d = d.iloc[::-1].reset_index(drop=True)                   # rank 1 at the top
@@ -353,6 +439,22 @@ table.kg-table tr:hover td { background: #F9FAFB; }
 .kg-mcard .c { font-size: 12.5px; color: #9CA3AF; margin-top: 2px; }
 .kg-about ul { font-size: 15.5px; line-height: 1.6; color: #374151; }
 .kg-about code { font-size: 13px; }
+.kg-why { margin-top: 22px; border-top: 1px solid #E5E7EB; padding-top: 18px; }
+.kg-why-h { font-size: 19px; font-weight: 750; color: #111827; }
+.kg-why-lead { font-size: 15.5px; line-height: 1.55; color: #374151; margin: 6px 0 12px; }
+.kg-driver { background: #F9FAFB; border-radius: 10px; padding: 12px 14px; margin-top: 10px; }
+.kg-dtop { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.kg-dgene { font-size: 16.5px; font-weight: 750; color: #111827; }
+.kg-dfull { font-size: 13.5px; color: #4B5563; margin-top: 1px; }
+.kg-dshare { text-align: right; }
+.kg-dpct { font-size: 13px; color: #6B7280; margin-top: 4px; }
+.kg-dbar { position: relative; height: 8px; background: #EEF0F4; border-radius: 999px; margin: 10px 0 6px; }
+.kg-dbar i { position: absolute; top: 0; bottom: 0; border-radius: 999px; }
+.kg-dbar b { position: absolute; left: calc(50% - 1px); top: -3px; bottom: -3px; width: 2px; background: #9CA3AF; }
+.kg-dnums { font-size: 13px; color: #6B7280; font-variant-numeric: tabular-nums; }
+.kg-drole { font-size: 14.5px; line-height: 1.5; color: #374151; margin-top: 6px; }
+.kg-dsub { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #6B7280; font-weight: 600; margin-top: 16px; }
+.kg-dict-role { font-size: 13.5px; color: #4B5563; line-height: 1.45; min-width: 280px; }
 """
 
 FORCE_LIGHT_JS = """
@@ -431,8 +533,59 @@ def verdict_card(p, specimen, d, coverage=None, extra=""):
     <div class="kg-fact"><div class="n">{cov}</div><div class="l">Model probesets present in this profile</div></div>
     <div class="kg-fact"><div class="n">{META['n_probesets_used']:,}</div><div class="l">Probesets the final model actually splits on</div></div>
   </div>
+  {explain_html(d, is_rej)}
   {warn}{extra}
   <div class="kg-foot">Threshold, model and data dictionary are fixed from the final notebook run; this application performs no training.</div>
+</div>"""
+
+
+def _driver_html(r):
+    full, role = gene_info(r.gene_symbol)
+    cls, color = ("rej", REJ_COLOR) if r.signal > 0 else ("non", NON_COLOR)
+    toward = "rejection" if r.signal > 0 else "non-rejection"
+    width = abs(r.lean) * 50                                       # half the bar per side
+    left = 50 if r.signal > 0 else 50 - width
+    return f"""
+<div class="kg-driver">
+  <div class="kg-dtop">
+    <div><span class="kg-dgene">{esc(r.gene_symbol)}</span> <span class="kg-muted">· {esc(r.probeset)}</span>
+      <div class="kg-dfull">{esc(full)}</div></div>
+    <div class="kg-dshare"><span class="kg-pill {cls}">toward {toward}</span>
+      <div class="kg-dpct">{r.share:.0%} of panel signal</div></div>
+  </div>
+  <div class="kg-dbar"><i style="left:{left:.1f}%;width:{width:.1f}%;background:{color}"></i><b></b></div>
+  <div class="kg-dnums">This biopsy {r.value:.2f} · training average rejection {r.mean_log2_rejection:.2f},
+    non-rejection {r.mean_log2_non_rejection:.2f} (log2) · model gain {r.gain:.1f}</div>
+  <div class="kg-drole">{esc(role)}</div>
+</div>"""
+
+
+def explain_html(d, is_rej):
+    dr = panel_drivers(d)
+    if dr.empty:
+        return ""
+    side = dr["signal"] > 0 if is_rej else dr["signal"] < 0
+    support, against = dr[side].head(5), dr[~side & (dr["signal"] != 0)].head(3)
+    verdict = "graft rejection" if is_rej else "non-rejection"
+    if support.empty:
+        lead = (f"None of the top-20 marker probesets lean toward {verdict} in this biopsy. The score comes from "
+                f"the other {META['n_probesets_used'] - 20:,} probesets the model uses, which this panel does not show.")
+    else:
+        names = ", ".join(f"<b>{esc(s)}</b>" for s in dict.fromkeys(support["gene_symbol"]))
+        lead = (f"The strongest marker signals behind this <b>{verdict}</b> result come from {names}. "
+                f"Together they carry {support['share'].sum():.0%} of the top-20 panel's signal.")
+    body = "".join(_driver_html(r) for r in support.itertuples())
+    if not against.empty:
+        body += ('<div class="kg-dsub">Signals pointing the other way</div>' +
+                 "".join(_driver_html(r) for r in against.itertuples()))
+    return f"""
+<div class="kg-why">
+  <div class="kg-why-h">Why this prediction</div>
+  <div class="kg-why-lead">{lead}</div>
+  {body}
+  <div class="kg-foot">Signal = the probeset's gain in the final model × how far this biopsy sits toward the rejection
+    or non-rejection training average. It ranks the top-20 marker panel against the training data; it is not the
+    model's internal reasoning, which also draws on {META['n_probesets_used']:,} probesets in total.</div>
 </div>"""
 
 
@@ -490,7 +643,8 @@ def about_html():
                        ("sensitivity", "Sensitivity"), ("specificity", "Specificity"), ("accuracy", "Accuracy")])
     dict_rows = "".join(
         f"<tr><td class='kg-muted'>{r.rank}</td><td><b>{esc(r.gene_symbol)}</b></td><td class='kg-muted'>{esc(r.probeset)}</td>"
-        f"<td>{r.gain:.1f}</td><td>{r.log2_fold_change:+.2f}</td><td>{esc(r.higher_in)}</td></tr>"
+        f"<td>{r.gain:.1f}</td><td>{r.log2_fold_change:+.2f}</td><td>{esc(r.higher_in)}</td>"
+        f"<td class='kg-dict-role'><b>{esc(gene_info(r.gene_symbol)[0])}.</b> {esc(gene_info(r.gene_symbol)[1])}</td></tr>"
         for r in DICT20.itertuples())
     params = ", ".join(f"{k} = {round(v, 5) if isinstance(v, float) else v}" for k, v in META["best_params"].items())
     v = META.get("versions", {})
@@ -501,13 +655,16 @@ def about_html():
   <div class="kg-metrics">{cards}</div>
   <h3>Top-20 probesets by gain (data dictionary)</h3>{
       "<div class='kg-tablewrap'><table class='kg-table'><thead><tr><th>#</th><th>Gene</th><th>Probeset</th>"
-      "<th>Gain</th><th>log2 FC</th><th>Higher in</th></tr></thead><tbody>" + dict_rows + "</tbody></table></div>"}
+      "<th>Gain</th><th>log2 FC</th><th>Higher in</th><th>What the gene does</th></tr></thead><tbody>" + dict_rows + "</tbody></table></div>"}
   <h3>Reading the output</h3>
   <ul>
     <li><b>Prediction</b> is Graft Rejection when the model score reaches the pre-specified threshold τ = {THRESHOLD:.2f}.</li>
     <li><b>Model score</b> is the tuned XGBoost output for the rejection class. It ranks biopsies by risk and is not a calibrated probability.</li>
     <li><b>Marker panel</b> compares this biopsy with the training averages of the 20 probesets the model relies on most.
         It describes the input, not the model's internal reasoning, and no SHAP values are used anywhere in this application.</li>
+    <li><b>Why this prediction</b> ranks those 20 probesets by signal: the probeset's gain in the final model multiplied by
+        how far the biopsy sits toward the rejection or non-rejection training average. It lists the strongest signals
+        behind the verdict, the ones pointing the other way, and what each gene does.</li>
   </ul>
   <h3>Proof of run</h3>
   <ul>

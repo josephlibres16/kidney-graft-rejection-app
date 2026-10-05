@@ -1,5 +1,6 @@
 gradio>=5.0
 xgboost>=3.4,<4
+scikit-learn>=1.5
 numpy>=2.0,<3
 pandas>=2.2
 matplotlib>=3.8
